@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 
 // use process.env vars to keep private variables
 require('dotenv').config();
@@ -52,13 +53,20 @@ app.use(helmet());
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(morgan('combined')); // use tiny or combined
+//
+// Serve static files from the React frontend app
+app.use(express.static(path.join(__dirname, 'client/build')))
+// Anything that doesn't match the above, send back index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname + '/client/build/index.html'))
+})
 
 // App routes - Auth
 app.get('/', (req, res) => res.send('hello world!'));
-app.get('/events', (req, res) => main.getEvents(req, res, db));
-app.post('/events', (req, res) => main.postEvents(req, res, db));
-app.put('/events', (req, res) => main.putEvents(req, res, db));
-app.delete('/events', (req, res) => main.deleteEvents(req, res, db));
+app.get('/api/events', (req, res) => main.getEvents(req, res, db));
+app.post('/api/events', (req, res) => main.postEvents(req, res, db));
+app.put('/api/events', (req, res) => main.putEvents(req, res, db));
+app.delete('/api/events', (req, res) => main.deleteEvents(req, res, db));
 
 // App server connection
 app.listen(process.env.PORT || 5000, () => {
