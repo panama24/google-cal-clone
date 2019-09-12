@@ -62,7 +62,7 @@ app.get('*', (req, res) => {
 })
 
 // App routes - Auth
-app.get('/', (req, res) => res.send('hello world!'));
+app.get('/api/', (req, res) => res.send('hello world!'));
 app.get('/api/events', (req, res) => main.getEvents(req, res, db));
 app.post('/api/events', (req, res) => main.postEvents(req, res, db));
 app.put('/api/events', (req, res) => main.putEvents(req, res, db));
