@@ -69,7 +69,7 @@ app.put('/api/events', (req, res) => main.putEvents(req, res, db));
 app.delete('/api/events', (req, res) => main.deleteEvents(req, res, db));
 
 // App server connection
-app.listen(process.env.PORT || 5000, () => {
+app.listen(process.env.PORT || port, () => {
   console.log(`app is running on port ${process.env.PORT || 5000}`);
 });
 
