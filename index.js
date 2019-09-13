@@ -43,9 +43,62 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
 
-// app.post('/api/events', (req, res) => main.postEvents(req, res, db));
-// app.put('/api/events', (req, res) => main.putEvents(req, res, db));
+app.post('/api/events', (req, res) => {
+  const {
+    description,
+    endDateTime: end_date_time,
+    startDateTime: start_date_time,
+    title,
+    type,
+  } = req.body;
+  db('events').insert({
+    description,
+    end_date_time,
+    start_date_time,
+    title,
+    type,
+  })
+    .returning('*')
+    .then(e => {
+      res.json(e);
+    })
+    .catch(err => res.status(400).json({ dbError: 'db error' }));
+});
+
+app.put('/api/events', (req, res) => {
+  const {
+    id,
+    description,
+    end_date_time,
+    start_date_time,
+    title,
+    type,
+  } = req.body;
+  db('events')
+    .where({ id })
+    .update({
+      description,
+      end_date_time,
+      start_date_time,
+      title,
+      type,
+    })
+    .returning('*')
+    .then(e => {
+      res.json(e);
+    })
+    .catch(err => res.status(400).json({ dbError: 'db error' }));
+});
+
 // app.delete('/api/events', (req, res) => main.deleteEvents(req, res, db));
+app.delete('/api/events', (req, res) => {
+  const { id } = req.body;
+  db('events').where({ id }).del()
+    .then(() => {
+      res.json({ delete: 'true' });
+    })
+    .catch(err => res.status(400).json({ dbError: 'db error' }));
+});
 
 // App server connection
 const PORT = process.env.PORT || 5000
