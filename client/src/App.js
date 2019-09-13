@@ -27,12 +27,6 @@ function App() {
     setNumberOfDaysInMonth(daysInMonth);
   }, []);
 
-  const fetchEvents = async () => {
-    const response = await fetch('/api/events');
-    const data = await response.json();
-    setScheduledEvents(data);
-  };
-
   const navigate = month => {
     setCurrentDate(month);
     setNumberOfDaysInMonth(getNumberOfDaysInMonth(month));

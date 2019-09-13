@@ -17,7 +17,7 @@ const db = require('knex')({
 
 
 const app = express();
-
+app.use(bodyParser.json());
 
 // Serve static files from the React frontend app
 app.use(express.static(path.join(__dirname, 'client/build')))
@@ -35,12 +35,6 @@ app.get('/api/events', (req, res) => {
       console.log(err);
       res.status(400).json({ dbError: 'db error' })
     });
-});
-
-// The "catchall" handler: for any request that doesn't
-// match one above, send back React's index.html file.
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
 
 app.post('/api/events', (req, res) => {
@@ -99,6 +93,13 @@ app.delete('/api/events', (req, res) => {
     })
     .catch(err => res.status(400).json({ dbError: 'db error' }));
 });
+
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname+'/client/build/index.html'));
+});
+
 
 // App server connection
 const PORT = process.env.PORT || 5000
