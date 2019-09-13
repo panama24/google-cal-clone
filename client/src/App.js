@@ -15,7 +15,10 @@ function App() {
   const [eventAction, setEventAction] = useState({ type: 'event' });
 
   useEffect(() => {
-    fetchEvents();
+    fetch('/api/events')
+      .then(res => res.json())
+      .then(data => setScheduledEvents(data))
+      .catch(err => console.log(err));
 
     const firstDay = moment(currentDate)
       .startOf('month')

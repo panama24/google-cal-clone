@@ -1,22 +1,40 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const bodyParser = require('body-parser');
+
+// knex doesn't set the ssl default in pg
+var pg = require('pg');
+pg.defaults.ssl = true;
+
+require('dotenv').config();
+
+// db connection with heroku
+const db = require('knex')({
+  client: 'pg',
+  connection: process.env.DATABASE_URL,
+});
+
 
 const app = express();
 
-const bodyParser = require('body-parser');
-
-const main = require('./controllers/main');
 
 // Serve static files from the React frontend app
 app.use(express.static(path.join(__dirname, 'client/build')))
 
-app.get('/api/events', cors(), async (req, res, next) => {
-  try {
-    res.json([1,2, 3, 4]);
-  } catch (err) {
-    next(err);
-  }
+app.get('/api/events', (req, res) => {
+  db.select('*').from("events")
+    .then(e => {
+      if (e.length) {
+        res.json(e);
+      } else {
+        res.json([]);
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(400).json({ dbError: 'db error' })
+    });
 });
 
 // The "catchall" handler: for any request that doesn't
