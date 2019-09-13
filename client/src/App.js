@@ -15,10 +15,7 @@ function App() {
   const [eventAction, setEventAction] = useState({ type: 'event' });
 
   useEffect(() => {
-    fetch('/api/events')
-      .then(res => res.json())
-      .then(data => setScheduledEvents(data))
-      .catch(err => console.log(err));
+    fetchEvents();
 
     const firstDay = moment(currentDate)
       .startOf('month')
@@ -26,6 +23,12 @@ function App() {
     const daysInMonth = getNumberOfDaysInMonth(firstDay);
     setNumberOfDaysInMonth(daysInMonth);
   }, []);
+
+  const fetchEvents = async () => {
+    const response = await fetch('/api/events');
+    const data = await response.json();
+    setScheduledEvents(data);
+  };
 
   const navigate = month => {
     setCurrentDate(month);
